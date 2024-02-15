@@ -1,0 +1,19 @@
+{
+  "name": "005-http",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "005-http": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "dotenv": "^16.4.4",
+    "yargs": "^17.7.2"
+  }
+}
