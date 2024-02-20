@@ -1,0 +1,18 @@
+{
+  "name": "004-stream",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "004-stream": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Soloshenko Aleksandr",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
+}
