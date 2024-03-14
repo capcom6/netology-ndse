@@ -19,6 +19,7 @@
 
 ### Решение
 
+Dockerfile: [Dockerfile](./library/Dockerfile)
 Опубликованный образ: [capcom6/netology-library](https://hub.docker.com/r/capcom6/netology-library)
 
 ## Задание 2: микросервисы
@@ -42,3 +43,11 @@
 1. Создан docker-compose.yml, запуск которого поднимает оба приложения и позволяет продемонстрировать работу счётчика.
 
 В исходном коде приложения должен появиться docker-compose.yml.
+
+### Решение
+
+1. Приложение-счетчик: [counter](./counter)
+2. Приложение-библиотека: [library](./library)
+   1. Работа со счетчиком вынесена в отдельный сервис [counter.js](./library/src/services/counter.js)
+   2. Увеличение и получение значения счетчика выполняется в сервисе [books.js](./library/src/services/books.js)
+3. Docker-compose: [docker-compose.yml](./docker-compose.yml)

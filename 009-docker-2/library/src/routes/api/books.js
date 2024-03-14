@@ -1,7 +1,9 @@
 const fs = require("fs");
 
 const upload = require("../../middleware/upload");
+
 const books = require("../../repositories/books");
+const { Books } = require("../../services");
 
 const router = require("express").Router();
 
@@ -26,17 +28,20 @@ const handleError = (res, error) => {
     });
 }
 
-router.get("/", (req, res) => {
-    res.json(books.select()).end();
+router.get("/", async (req, res) => {
+    const data = await Books.select();
+
+    res.json(data).end();
 });
 
-router.get("/:id", (req, res) => {
-    const book = books.get(req.params.id);
-    res.json(book).end();
+router.get("/:id", async (req, res) => {
+    const data = await Books.get(req.params.id, { incrCounter: true });
+
+    res.json(data).end();
 });
 
-router.get("/:id/download", (req, res) => {
-    const book = books.get(req.params.id);
+router.get("/:id/download", async (req, res) => {
+    const book = await Books.get(req.params.id);
     if (!book.fileBook) {
         res.status(404).json({
             error: "File is not attached",
@@ -55,29 +60,29 @@ router.get("/:id/download", (req, res) => {
     res.download(`./public/books/${book.fileBook}`);
 });
 
-router.post("/", upload.single("fileBook"), (req, res) => {
-    const id = books.insert({
+router.post("/", upload.single("fileBook"), async (req, res) => {
+    const id = await Books.insert({
         ...req.body,
         fileBook: req.file ? req.file.filename : null,
     });
-    const book = books.get(id);
+    const book = await Books.get(id);
 
     res.status(201).json(book).end();
 });
 
-router.put("/:id", upload.single("fileBook"), (req, res) => {
+router.put("/:id", upload.single("fileBook"), async (req, res) => {
     const data = {
         ...req.body,
         fileBook: req.file ? req.file.filename : null,
     };
-    books.update(req.params.id, data);
-    const book = books.get(req.params.id);
+    await Books.update(req.params.id, data);
+    const book = await Books.get(req.params.id);
 
     res.json(book).end();
 });
 
-router.delete("/:id", (req, res) => {
-    books.remove(req.params.id);
+router.delete("/:id", async (req, res) => {
+    await Books.remove(req.params.id);
     res.status(200).send("ok").end();
     // res.status(204).end();
 });

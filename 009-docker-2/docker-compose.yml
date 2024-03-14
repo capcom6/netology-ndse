@@ -1,0 +1,20 @@
+services:
+  library:
+    image: capcom6/netology-library
+    build:
+      dockerfile: Dockerfile
+      context: library/
+    environment:
+      NODE_ENV: production
+      COUNTER_URL: http://counter:3001
+    ports:
+      - 3000:3000
+  counter:
+    image: capcom6/netology-counter
+    build:
+      dockerfile: Dockerfile
+      context: counter/
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3001:3001

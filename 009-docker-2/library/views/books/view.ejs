@@ -25,6 +25,10 @@
                     <p><strong>Favorite:</strong>
                         <%= book.favorite ? 'Yes' : 'No' %>
                     </p>
+                    <p><strong>Views</strong>
+                        <%= book.views %>
+                    </p>
+
                     <% if (book.fileBook) { %>
                         <p>
                             <a href="/api/books/<%= book.id %>/download" class="btn btn-success" download>Download

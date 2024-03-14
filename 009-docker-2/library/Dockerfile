@@ -10,6 +10,7 @@ COPY package*.json ./
 
 RUN npm install --omit=dev
 
+COPY views/ ./views
 COPY src/ ./src
 
 # USER node
