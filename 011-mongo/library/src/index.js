@@ -1,11 +1,21 @@
 const config = require("./config");
 const express = require("express");
+const mongoose = require("mongoose");
 require('express-async-errors');
 
-const app = express();
+const start = async () => {
+    await mongoose.connect(config.MONGO_URL);
+    console.log("MongoDB connected");
 
-app.set("view engine", "ejs");
-app.use("/", require("./routes"));
+    const app = express();
+
+    app.set("view engine", "ejs");
+    app.use("/", require("./routes"));
+
+    app.listen(config.PORT, () => {
+        console.log(`Server started at http://127.0.0.1:${config.PORT}`);
+    })
+}
 
 const stop = () => {
     console.log("Server stopped");
@@ -19,6 +29,4 @@ process.on('SIGTERM', () => {
     stop();
 });
 
-app.listen(config.PORT, () => {
-    console.log(`Server started at http://127.0.0.1:${config.PORT}`);
-})
+start();

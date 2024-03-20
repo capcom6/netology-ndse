@@ -7,10 +7,17 @@ services:
     environment:
       NODE_ENV: production
       COUNTER_URL: http://counter:3001
+      MONGO_URL: mongodb://mongo:27017
     ports:
       - 3000:3000
     volumes:
       - library-uploads:/usr/app/public
+    depends_on:
+      mongo:
+        condition: service_healthy
+      counter:
+        condition: service_started
+
   counter:
     image: capcom6/netology-counter
     build:
@@ -23,6 +30,17 @@ services:
     volumes:
       - counter-db:/usr/app/storage
 
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: 'mongosh --eval "db.runCommand({ ping: 1 })"'
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 volumes:
   library-uploads:
   counter-db:
+  mongo-data:
