@@ -61,11 +61,10 @@ router.get("/:id/download", async (req, res) => {
 });
 
 router.post("/", upload.single("fileBook"), async (req, res) => {
-    const id = await Books.insert({
+    const book = await Books.insert({
         ...req.body,
         fileBook: req.file ? req.file.filename : null,
     });
-    const book = await Books.get(id);
 
     res.status(201).json(book).end();
 });
@@ -75,8 +74,7 @@ router.put("/:id", upload.single("fileBook"), async (req, res) => {
         ...req.body,
         fileBook: req.file ? req.file.filename : null,
     };
-    await Books.update(req.params.id, data);
-    const book = await Books.get(req.params.id);
+    const book = await Books.update(req.params.id, data);
 
     res.json(book).end();
 });

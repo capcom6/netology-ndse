@@ -1,17 +1,37 @@
-const uuid = require("uuid");
+const { Schema, model, isValidObjectId } = require("mongoose");
 
-class Book {
-    constructor(id, title, description, authors, favorite, fileCover, fileName, fileBook) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.authors = authors;
-        this.favorite = favorite;
-        this.fileCover = fileCover;
-        this.fileName = fileName;
-        this.fileBook = fileBook;
-    }
-}
+const BookSchema = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    authors: {
+        type: String,
+        required: true
+    },
+    favorite: {
+        type: Boolean,
+        default: false
+    },
+    fileCover: {
+        type: String,
+        required: false
+    },
+    fileName: {
+        type: String,
+        required: false
+    },
+    fileBook: {
+        type: String,
+        required: false
+    },
+});
+
+const Book = model("Book", BookSchema);
 
 class NotFoundError extends Error {
     constructor(message) {
@@ -27,52 +47,48 @@ class ValidationError extends Error {
     }
 }
 
-const books = {
-    "129239bb-d880-4bd5-9440-8960fa320951": new Book(
-        "129239bb-d880-4bd5-9440-8960fa320951",
-        "War and Peace",
-        "War and Peace is a classic novel of Russian literature.",
-        "Leo Tolstoy",
-        false,
-        "https://upload.wikimedia.org/wikipedia/commons/2/2a/T25-011.jpg",
-        "War_and_Peace.txt",
-        null
-    )
+const select = async () => {
+    return await Book.find({});
 };
 
-const select = () => {
-    return Object.values(books);
-};
-
-const get = (id) => {
-    if (!books[id]) {
+const get = async (id) => {
+    if (!isValidObjectId(id)) {
         throw new NotFoundError("Book not found");
     }
 
-    return books[id];
+    return await Book.findById(id);
 };
 
-const insert = (book) => {
+const insert = async (book) => {
     book = validate(book);
 
-    const id = uuid.v4();
-    books[id] = new Book(id, book.title, book.description, book.authors, book.favorite, book.fileCover, book.fileName, book.fileBook);
-
-    return id;
+    return await Book.create(book);
 }
 
-const update = (id, book) => {
-    const oldBook = get(id);
-    const newBook = validate({
-        ...oldBook,
-        ...book,
-    });
+const update = async (id, book) => {
+    if (!isValidObjectId(id)) {
+        throw new NotFoundError("Book not found");
+    }
 
-    books[id] = new Book(id, newBook.title, newBook.description, newBook.authors, newBook.favorite, newBook.fileCover, newBook.fileName, newBook.fileBook);
+    const item = await Book.findOneAndUpdate(
+        { _id: id },
+        { $set: book },
+        { new: true }
+    );
+
+    if (!item) {
+        throw new NotFoundError("Book not found");
+    }
+
+    return item;
 }
 
-const remove = (id) => {
-    delete books[id];
+const remove = async (id) => {
+    if (!isValidObjectId(id)) {
+        return;
+    }
+
+    return await Book.deleteOne({ _id: id });
 }
 
 const validate = (book) => {
